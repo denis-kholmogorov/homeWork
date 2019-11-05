@@ -5,52 +5,61 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         ArrayList<String> todoList = new ArrayList<>();
-        String[] taskText;
-        int number = 0;
+        int number;
 
-        for (; ; ) {
+        for (;;) {
+            String[] taskText;
             String text = scanner.nextLine();
-            String[] subTask = text.split(" ");
+            String[] subTask = text.split(" ", 2);
 
-            if (text.matches("^[A-Z]+ \\d+ .+")) {
-                taskText = text.split("^[A-Z]+ \\d+ ");
-                number = Integer.parseInt(subTask[1]);
-            }
-            else {
-                taskText= text.split("^[A-Z]+ ");
-            }
-//LIST
-            if (subTask[0].equals("LIST")) {
+
+            if (text.matches("^LIST$")) {   // LIST
+                System.out.println("Список заданий: ");
                 for (String word : todoList) {
                     System.out.println(word);
                 }
             }
-//ADD
-            if (subTask[0].equals("ADD") && taskText.length == 2) {
-                if (number > todoList.size()) {
-                    System.out.println("Введите номер задания меньше чем " + (todoList.size()+1));
-                } else {
+
+            if (text.matches("^ADD \\d+ .+")) {  //ADD + NUMBER
+                taskText = text.split("^ADD \\d+ ");
+                number = Integer.parseInt(subTask[1]);
+                if(number <= todoList.size()) {
                     todoList.add(number, taskText[1]);
+                    System.out.println("Добавлено задание под № " + number);
                 }
-            } else if (subTask[0].equals("ADD") && taskText.length == 1) {
-                todoList.add(taskText[1]);
+                else {
+                    System.out.println("Введите номер задания меньше чем " + (todoList.size() + 1));
+                }
             }
-//EDIT
-            if (subTask[0].equals("EDIT")) {
-                if (number> todoList.size()) {
-                    System.out.println("Введите номер задания меньше чем " + (todoList.size()+1));
-                } else {
+
+            if (text.matches("^EDIT \\d+ .+")){    // EDIT + NUMBER
+                taskText = text.split("^EDIT \\d+ ");
+                number = Integer.parseInt(subTask[1]);
+                if(number < todoList.size()) {
                     todoList.set(number, taskText[1]);
+                    System.out.println("Изменено задание под № " + number);
+                }
+                else {
+                    System.out.println("Введите номер задания меньше чем " + todoList.size());
                 }
             }
-//DELETE
-            if (subTask[0].equals("DELETE")) {
-                if (number > todoList.size()) {
-                    System.out.println("Введите номер задания меньше чем " + (todoList.size()+1));
-                } else {
+            if (text.matches("^ADD \\D+")) {  // ADD
+                taskText = text.split("^[A-Z]+ ");
+                todoList.add(taskText[1]);
+                System.out.println("Добавлено задание");
+
+            }
+            if (text.matches("^DELETE \\d+$")){   // DELETE
+                number = Integer.parseInt(subTask[1]);
+                if(number < todoList.size()) {
                     todoList.remove(number);
+                    System.out.println("Удалено задание № " + number);
+                }
+                else {
+                    System.out.println("Введите номер задания меньше чем " + todoList.size());
                 }
             }
         }
     }
 }
+
